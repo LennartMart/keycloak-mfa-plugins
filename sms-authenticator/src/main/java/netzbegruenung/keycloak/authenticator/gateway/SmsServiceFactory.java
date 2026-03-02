@@ -28,13 +28,19 @@ import java.util.Map;
 public class SmsServiceFactory {
 
 	private static final Logger logger = Logger.getLogger(SmsServiceFactory.class);
+	private static final String GATEWAY_BUDGETSMS = "budgetsms";
 
 	public static SmsService get(Map<String, String> config) {
 		if (Boolean.parseBoolean(config.getOrDefault("simulation", "false"))) {
 			return (phoneNumber, message) ->
 				logger.infof("***** SIMULATION MODE ***** Would send SMS to %s with text: %s", phoneNumber, message);
-		} else {
-			return new ApiSmsService(config);
 		}
+
+		String gateway = config.getOrDefault("gateway", "");
+		if (GATEWAY_BUDGETSMS.equalsIgnoreCase(gateway)) {
+			return new BudgetSmsService(config);
+		}
+
+		return new ApiSmsService(config);
 	}
 }

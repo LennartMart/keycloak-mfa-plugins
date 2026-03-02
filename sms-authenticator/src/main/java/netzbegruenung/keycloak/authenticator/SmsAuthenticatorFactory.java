@@ -71,11 +71,21 @@ public class SmsAuthenticatorFactory implements AuthenticatorFactory {
 
 	@Override
 	public List<ProviderConfigProperty> getConfigProperties() {
+		ProviderConfigProperty gatewayProperty = new ProviderConfigProperty("gateway", "SMS Gateway", "Select the SMS gateway provider to use.", ProviderConfigProperty.LIST_TYPE, "generic");
+		gatewayProperty.setOptions(List.of("generic", "BudgetSMS"));
+
 		return List.of(
+			gatewayProperty,
 			new ProviderConfigProperty("length", "Code length", "The number of digits of the generated code.", ProviderConfigProperty.STRING_TYPE, 6),
 			new ProviderConfigProperty("ttl", "Time-to-live", "The time to live in seconds for the code to be valid.", ProviderConfigProperty.STRING_TYPE, "300"),
 			new ProviderConfigProperty("senderId", "SenderId", "The sender ID is displayed as the message sender on the receiving device.", ProviderConfigProperty.STRING_TYPE, "Keycloak"),
 			new ProviderConfigProperty("simulation", "Simulation mode", "In simulation mode, the SMS won't be sent, but printed to the server logs", ProviderConfigProperty.BOOLEAN_TYPE, true),
+			// BudgetSMS specific settings
+			new ProviderConfigProperty("budgetsms.username", "BudgetSMS Username", "Your BudgetSMS username (required when gateway is 'Budget SMS').", ProviderConfigProperty.STRING_TYPE, ""),
+			new ProviderConfigProperty("budgetsms.userid", "BudgetSMS User ID", "Your BudgetSMS user ID (required when gateway is 'Budget SMS').", ProviderConfigProperty.STRING_TYPE, ""),
+			new ProviderConfigProperty("budgetsms.handle", "BudgetSMS Handle", "Your BudgetSMS handle (required when gateway is 'Budget SMS').", ProviderConfigProperty.STRING_TYPE, ""),
+			new ProviderConfigProperty("budgetsms.testmode", "BudgetSMS Test Mode", "Use BudgetSMS test API (no SMS sent, no credit deducted). For testing purposes only.", ProviderConfigProperty.BOOLEAN_TYPE, false),
+			// Generic API settings
 			new ProviderConfigProperty("countrycode", "Default country prefix", "Default country prefix that is assumed if user does not provide one.", ProviderConfigProperty.STRING_TYPE, "+49"),
 			new ProviderConfigProperty("apiurl", "SMS API URL", "The path to the API that receives an HTTP request.", ProviderConfigProperty.STRING_TYPE, "https://example.com/api/sms/send"),
 			new ProviderConfigProperty("urlencode", "URL encode data", "By default send a JSON in HTTP POST body. You can URL encode the data instead.", ProviderConfigProperty.BOOLEAN_TYPE, false),
